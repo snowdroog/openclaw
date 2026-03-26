@@ -79,7 +79,9 @@ def _get_l0l1(info: dict) -> tuple[str, str]:
 
 def _load_skill_catalog() -> list[dict]:
     """Load skills from skill-abstracts.yaml."""
-    data = _load_yaml(LIBRARY_DIR / "skills" / "skill-abstracts.yaml")
+    raw = _load_yaml(LIBRARY_DIR / "skills" / "skill-abstracts.yaml")
+    # Handle top-level wrapper key (e.g. {skills: {...}})
+    data = raw.get("skills", raw) if isinstance(raw, dict) else raw
     if isinstance(data, dict):
         items = []
         for key, info in data.items():
@@ -103,7 +105,8 @@ def _load_skill_catalog() -> list[dict]:
 
 def _load_agent_catalog() -> list[dict]:
     """Load agents from agent-abstracts.yaml."""
-    data = _load_yaml(LIBRARY_DIR / "agents" / "agent-abstracts.yaml")
+    raw = _load_yaml(LIBRARY_DIR / "agents" / "agent-abstracts.yaml")
+    data = raw.get("agents", raw) if isinstance(raw, dict) else raw
     if isinstance(data, dict):
         items = []
         for key, info in data.items():
@@ -122,7 +125,8 @@ def _load_agent_catalog() -> list[dict]:
 
 def _load_prompt_catalog() -> list[dict]:
     """Load prompts from prompt-abstracts.yaml."""
-    data = _load_yaml(LIBRARY_DIR / "prompts" / "prompt-abstracts.yaml")
+    raw = _load_yaml(LIBRARY_DIR / "prompts" / "prompt-abstracts.yaml")
+    data = raw.get("prompts", raw) if isinstance(raw, dict) else raw
     if isinstance(data, dict):
         items = []
         for category, entries in data.items():
@@ -144,7 +148,8 @@ def _load_prompt_catalog() -> list[dict]:
 
 def _load_sfa_catalog() -> list[dict]:
     """Load single-file agents from sfa-abstracts.yaml."""
-    data = _load_yaml(LIBRARY_DIR / "single-file-agents" / "sfa-abstracts.yaml")
+    raw = _load_yaml(LIBRARY_DIR / "single-file-agents" / "sfa-abstracts.yaml")
+    data = raw.get("single_file_agents", raw.get("single-file-agents", raw)) if isinstance(raw, dict) else raw
     if isinstance(data, dict):
         items = []
         for key, info in data.items():
