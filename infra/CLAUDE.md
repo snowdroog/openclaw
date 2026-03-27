@@ -83,7 +83,9 @@ The Docker container uses an ephemeral filesystem. Only `/home/node/.openclaw` i
 - `/home/node/.ssh/` — use the `.openclaw/.ssh` symlink pattern instead
 - Any files written to `/app/`, `/tmp/`, or other non-volume paths
 
-**Container entrypoint:** `sh -c 'ln -sf /home/node/.openclaw/.ssh /home/node/.ssh && exec node dist/index.js gateway run --bind lan --port 18789 --force'`
+**Container entrypoint (gateway):** `sh -c 'ln -sf /home/node/.openclaw/.ssh /home/node/.ssh && ssh -o BatchMode=yes -o StrictHostKeyChecking=no -fNL 3100:127.0.0.1:3100 jeff@100.96.154.112 2>/dev/null; exec node dist/index.js gateway run --bind lan --port 18789 --force'`
+
+The SSH tunnel to Mac:3100 gives the gateway access to Paperclip (which runs in local_trusted mode on localhost only).
 
 This symlink is critical — without it, SSH keys are invisible to the gateway and all fleet SSH operations fail.
 
